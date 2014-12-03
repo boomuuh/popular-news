@@ -40,12 +40,15 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
     private static final String OFFSET = "&offset=";
     private List<NewsInfo> mList;
     private Context mContext;
+    private static final String NEWS_API = "http://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key=fa5723452d7d2454cf24a2a3d920012c:10:66680873&offset=";
+
     public NewsAdapter(Context context) {
         super(context, R.layout.news_article_layout);
 
         mList = new ArrayList<>();
         this.mContext = context;
-        new NewsAsyncTask().execute("http://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key=fa5723452d7d2454cf24a2a3d920012c:10:66680873&offset=0");
+        loadMore(0);
+        //new NewsAsyncTask().execute("http://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key=fa5723452d7d2454cf24a2a3d920012c:10:66680873&offset=0");
     }
 
     @Override
@@ -97,12 +100,18 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
     }
 
 
+    public String getWebPage(int pos) {
+        if (pos >= mList.size())
+            throw new IllegalArgumentException("getWebPage(int pos): pos is >= then the # of items in the list");
+        return mList.get(pos).URL;
+    }
 
 
 
 
-
-
+    public void loadMore(int offset) {
+        new NewsAsyncTask().execute(NEWS_API+offset);
+    }
 
 
 
@@ -156,8 +165,12 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
             @Override
             protected void onPostExecute(String s) {
                 JsonParser parser = new JsonParser();
-                JsonArray results = parser.parse(s)
-                                    .getAsJsonObject().get("results").getAsJsonArray();
+                JsonElement pe = parser.parse(s);
+                String status = pe.getAsJsonObject().get("status").getAsString();
+                if (!status.equals("OK"))
+                    return;
+
+                JsonArray results = pe.getAsJsonObject().get("results").getAsJsonArray();
                 for (JsonElement item : results) {
                     final JsonObject gobj = item.getAsJsonObject();
                     final String html  = gobj.get("url").getAsString();
