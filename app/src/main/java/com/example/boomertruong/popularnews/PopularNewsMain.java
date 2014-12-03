@@ -1,10 +1,16 @@
 package com.example.boomertruong.popularnews;
 
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +34,9 @@ public class PopularNewsMain extends ActionBarActivity implements NewsArticleWeb
     @InjectView(R.id.popular_news_list)
     ListView mNewsList;
 
-
+    private NetworkChangeReceiver mNetworkListener;
     private onNewsArticleClickListener mItemClicker;
+    private NewsFeedListener mScrollListener;
     private  NewsAdapter adapter;
 
     @Override
@@ -40,14 +47,47 @@ public class PopularNewsMain extends ActionBarActivity implements NewsArticleWeb
 
          adapter = new NewsAdapter(this);
          mItemClicker = new onNewsArticleClickListener();
+        mScrollListener = new NewsFeedListener();
          mNewsList.setAdapter(adapter);
         mNewsList.setOnItemClickListener(mItemClicker);
-        mNewsList.setOnScrollListener(new NewsFeedListener());
+        mNewsList.setOnScrollListener(mScrollListener);
     }
+
+    @Override
+    protected void onResume() {
+        if (mNetworkListener == null)
+            mNetworkListener = new NetworkChangeReceiver();
+
+        registerReceiver(mNetworkListener,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mNetworkListener);
+        super.onPause();
+    }
+
+    public class NetworkChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            ConnectivityManager cm =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE );
+            NetworkInfo activeNetInfo = cm.getActiveNetworkInfo();
+            if (activeNetInfo != null && activeNetInfo.isConnected()) {
+                mScrollListener.reset();
+                adapter.loadMore(0);
+            }
+
+
+        }
+    }
+
 
     private class NewsFeedListener implements AbsListView.OnScrollListener {
 
-        private int default_size = 20;
+        private static final int default_size = 20;
         private int count = 0;
         private int prev  = 0;
         private boolean loading = true;
@@ -71,6 +111,11 @@ public class PopularNewsMain extends ActionBarActivity implements NewsArticleWeb
                 adapter.loadMore(count * default_size);
                 loading = true;
             }
+        }
+
+        public void reset() {
+            count  = prev = 0;
+            loading = true;
         }
     }
 

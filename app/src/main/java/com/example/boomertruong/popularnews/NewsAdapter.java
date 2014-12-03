@@ -1,6 +1,10 @@
 package com.example.boomertruong.popularnews;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.boomertruong.popularnews.Data.NewsInfo;
 import com.google.gson.JsonArray;
@@ -110,7 +115,21 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
 
 
     public void loadMore(int offset) {
-        new NewsAsyncTask().execute(NEWS_API+offset);
+        ConnectivityManager cm =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting())
+            new NewsAsyncTask().execute(NEWS_API+offset);
+        else
+            new AlertDialog.Builder(mContext)
+                    .setTitle(R.string.network_error_title)
+                    .setMessage(R.string.network_error_body)
+                    .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    }).show();
     }
 
 
@@ -167,8 +186,11 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
                 JsonParser parser = new JsonParser();
                 JsonElement pe = parser.parse(s);
                 String status = pe.getAsJsonObject().get("status").getAsString();
-                if (!status.equals("OK"))
+                if (!status.equals("OK")){
+
+
                     return;
+                }
 
                 JsonArray results = pe.getAsJsonObject().get("results").getAsJsonArray();
                 for (JsonElement item : results) {
