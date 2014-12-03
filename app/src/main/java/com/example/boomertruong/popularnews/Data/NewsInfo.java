@@ -1,5 +1,7 @@
 package com.example.boomertruong.popularnews.Data;
 
+import android.text.Html;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +16,9 @@ public class NewsInfo {
     public String BYLINE;
     public List<String> thumbnails = new ArrayList<>();
     public NewsInfo (String title, String author,String url) {
-        this.TITLE = title;
-        this.BYLINE = author;
-        this.URL = url;
+        this.TITLE = clean(title);
+        this.BYLINE = clean(author);
+        this.URL = clean(url);
 
     }
 
@@ -28,14 +30,12 @@ public class NewsInfo {
 
 
     public NewsInfo (String img, String title, String auth,String url) {
-        this.IMG_URL = img;
-        this.TITLE = title;
-        this.BYLINE = auth;
-        this.URL = url;
+        this(title,auth,url);
+        addImage(img);
     }
 
-    public NewsInfo (String json) {
-
+    private static String clean(String sb){
+        return Html.escapeHtml(sb).replaceAll("&#8217;", "'");
     }
 
     @Override

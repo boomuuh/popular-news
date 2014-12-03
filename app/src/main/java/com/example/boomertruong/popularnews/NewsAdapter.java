@@ -11,28 +11,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.boomertruong.popularnews.Data.NewsInfo;
-import com.example.boomertruong.popularnews.Data.Results;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +36,8 @@ import butterknife.InjectView;
  * Created by BoomerTruong on 12/2/14.
  */
 public class NewsAdapter extends ArrayAdapter<NewsInfo> {
-
+    private static final String TAG = "NewsAdapter";
+    private static final String OFFSET = "&offset=";
     private List<NewsInfo> mList;
     private Context mContext;
     public NewsAdapter(Context context) {
@@ -77,7 +71,7 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d("ADAPTER","GETVIEW");
+        Log.d(TAG,"getView position: " + position);
         NewsHolder nh;
         if (convertView != null) {
             nh = (NewsHolder) convertView.getTag();
@@ -104,12 +98,11 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
 
 
 
-        private static final String TAG = "NewsAdapter";
 
 
 
 
-        private static final String OFFSET = "&offset=";
+
 
 
 
@@ -179,7 +172,6 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
 
                     } else {
                         String t = "http://graphics8.nytimes.com/images/2014/12/07/books/review/07notables-1/07notables-1-thumbStandard.jpg";
-
                         i.addImage(t);
                     }
 
@@ -187,24 +179,7 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
                     mList.add(i);
 
                 }
-               /* try {
-                    JSONObject jobj = new JSONObject(s);
-                    JSONArray jarr = jobj.getJSONArray("results");
-                    final int size = jarr.length();
 
-                    for (int i = 0; i < size; ++i) {
-                        final JSONObject temp = parser.jarr.getJSONObject(i);
-
-
-                        Log.i(TAG, temp.toString() + " temp");
-
-
-                       mList.add(new NewsInfo("http://graphics8.nytimes.com/images/2014/12/07/books/review/07notables-1/07notables-1-thumbStandard.jpg", temp.getString("byline"), temp.getString("title"), temp.getString("url")));
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
 
                  notifyDataSetChanged();
             }

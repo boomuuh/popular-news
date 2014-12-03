@@ -16,28 +16,23 @@
         android:src="@drawable/ic_launcher" />
 
     <TextView
-        android:id="@+id/second_line"
+        android:id="@+id/first_line"
         android:layout_width="match_parent"
-        android:layout_height="26dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content"
         android:layout_toEndOf="@id/icon"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="Description"
-        android:textSize="12sp" />
+        android:textSize="15sp" />
 
     <TextView
-        android:id="@+id/first_line"
+        android:id="@+id/second_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/second_line"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/first_line"
         android:layout_toEndOf="@id/icon"
         android:gravity="center_vertical"
         android:text="Example application"
-        android:textSize="16sp" />
+        android:textSize="13sp" />
 
 </RelativeLayout>

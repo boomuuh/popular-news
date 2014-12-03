@@ -23,8 +23,7 @@ public class PopularNewsMain extends ActionBarActivity {
     @InjectView(R.id.popular_news_list)
     ListView mNewsList;
 
-    @InjectView(R.id.main_title)
-    TextView mTitle;
+
     private  NewsAdapter adapter;
 
     @Override
@@ -34,17 +33,7 @@ public class PopularNewsMain extends ActionBarActivity {
         ButterKnife.inject(this);
 
          adapter = new NewsAdapter(this);
-        mNewsList.setAdapter(adapter);
-        mTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(PopularNewsMain.this," " + adapter.getCount(),Toast.LENGTH_SHORT).show();
-            }
-        });
-        Log.d(TAG,"onCreate()");
-
-
-
+         mNewsList.setAdapter(adapter);
     }
 
 
