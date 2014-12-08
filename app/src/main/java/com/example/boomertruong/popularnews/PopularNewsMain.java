@@ -86,7 +86,7 @@ public class PopularNewsMain extends ActionBarActivity implements NewsArticleWeb
 
 
     private class NewsFeedListener implements AbsListView.OnScrollListener {
-
+        private static final String TAG = "NewsFeedListener";
         private static final int default_size = 20;
         private int count = 0;
         private int prev  = 0;
@@ -102,12 +102,14 @@ public class PopularNewsMain extends ActionBarActivity implements NewsArticleWeb
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (loading && totalItemCount > prev) {
+                    Log.d(TAG,"1 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
                     loading = false;
                     prev = totalItemCount;
                     count++;
                 }
 
             if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + default_size)) {
+                Log.d(TAG,"2 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
                 adapter.loadMore(count * default_size);
                 loading = true;
             }

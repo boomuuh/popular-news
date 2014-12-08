@@ -13,8 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.boomertruong.popularnews.Data.NewsInfo;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -47,9 +51,10 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
     private Context mContext;
     private static final String NEWS_API = "http://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key=fa5723452d7d2454cf24a2a3d920012c:10:66680873&offset=";
 
+    private RequestQueue mRequestQueue;
     public NewsAdapter(Context context) {
         super(context, R.layout.news_article_layout);
-
+        mRequestQueue = HoneyWell.getInstance().getRequestQueue();
         mList = new ArrayList<>();
         this.mContext = context;
         loadMore(0);
@@ -118,9 +123,61 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
         ConnectivityManager cm =
                 (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting())
-            new NewsAsyncTask().execute(NEWS_API+offset);
-        else
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            //new NewsAsyncTask().execute(NEWS_API + offset);
+            StringRequest request = new StringRequest(Request.Method.GET, (NEWS_API + offset)
+                    , new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    JsonParser parser = new JsonParser();
+                    JsonElement pe = parser.parse(response);
+                    String status = pe.getAsJsonObject().get("status").getAsString();
+                    if (!status.equals("OK")){
+
+
+                        return;
+                    }
+
+                    JsonArray results = pe.getAsJsonObject().get("results").getAsJsonArray();
+                    for (JsonElement item : results) {
+                        final JsonObject gobj = item.getAsJsonObject();
+                        final String html  = gobj.get("url").getAsString();
+                        final String  by   = gobj.get("byline").getAsString();
+                        final String title = gobj.get("title").getAsString();
+                        NewsInfo i = new NewsInfo(title,by,html);
+                        final JsonElement media  = gobj.get("media");
+                        if (media.isJsonArray()) {
+                            JsonArray media_array = media.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("media-metadata");
+                            for (JsonElement e : media_array)
+                                i.addImage(e.getAsJsonObject().get("url").getAsString());
+
+                        } else {
+                            String t = "http://graphics8.nytimes.com/images/2014/12/07/books/review/07notables-1/07notables-1-thumbStandard.jpg";
+                            i.addImage(t);
+                        }
+
+
+                        mList.add(i);
+
+                    }
+
+
+                    notifyDataSetChanged();
+                }
+            },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG,"onErrorResponse " + error.getMessage());
+                    }
+                }
+
+
+            );
+
+            mRequestQueue.add(request);
+        }else
             new AlertDialog.Builder(mContext)
                     .setTitle(R.string.network_error_title)
                     .setMessage(R.string.network_error_body)

@@ -34,5 +34,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.jakewharton:butterknife:6.0.0'
     compile 'com.google.code.gson:gson:1.7.2'
+    compile 'com.mcxiaoke.volley:library:1.0.+'
 
 }
