@@ -58,7 +58,7 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
         mList = new ArrayList<>();
         this.mContext = context;
         loadMore(0);
-        //new NewsAsyncTask().execute("http://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key=fa5723452d7d2454cf24a2a3d920012c:10:66680873&offset=0");
+
     }
 
     @Override
@@ -117,7 +117,38 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
     }
 
 
+    private void parseNewsResults(String response) {
+        JsonParser parser = new JsonParser();
+        JsonElement pe = parser.parse(response);
+        String status = pe.getAsJsonObject().get("status").getAsString();
+        if (!status.equals("OK")){ return; }
 
+        JsonArray results = pe.getAsJsonObject().get("results").getAsJsonArray();
+        for (JsonElement item : results) {
+            final JsonObject gobj = item.getAsJsonObject();
+            final String html  = gobj.get("url").getAsString();
+            final String  by   = gobj.get("byline").getAsString();
+            final String title = gobj.get("title").getAsString();
+            NewsInfo i = new NewsInfo(title,by,html);
+            final JsonElement media  = gobj.get("media");
+            if (media.isJsonArray()) {
+                JsonArray media_array = media.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("media-metadata");
+                for (JsonElement e : media_array)
+                    i.addImage(e.getAsJsonObject().get("url").getAsString());
+
+            } else {
+                String t = "http://graphics8.nytimes.com/images/2014/12/07/books/review/07notables-1/07notables-1-thumbStandard.jpg";
+                i.addImage(t);
+            }
+
+
+            mList.add(i);
+
+        }
+
+
+        notifyDataSetChanged();
+    }
 
     public void loadMore(int offset) {
         ConnectivityManager cm =
@@ -129,40 +160,7 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
                     , new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    JsonParser parser = new JsonParser();
-                    JsonElement pe = parser.parse(response);
-                    String status = pe.getAsJsonObject().get("status").getAsString();
-                    if (!status.equals("OK")){
-
-
-                        return;
-                    }
-
-                    JsonArray results = pe.getAsJsonObject().get("results").getAsJsonArray();
-                    for (JsonElement item : results) {
-                        final JsonObject gobj = item.getAsJsonObject();
-                        final String html  = gobj.get("url").getAsString();
-                        final String  by   = gobj.get("byline").getAsString();
-                        final String title = gobj.get("title").getAsString();
-                        NewsInfo i = new NewsInfo(title,by,html);
-                        final JsonElement media  = gobj.get("media");
-                        if (media.isJsonArray()) {
-                            JsonArray media_array = media.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("media-metadata");
-                            for (JsonElement e : media_array)
-                                i.addImage(e.getAsJsonObject().get("url").getAsString());
-
-                        } else {
-                            String t = "http://graphics8.nytimes.com/images/2014/12/07/books/review/07notables-1/07notables-1-thumbStandard.jpg";
-                            i.addImage(t);
-                        }
-
-
-                        mList.add(i);
-
-                    }
-
-
-                    notifyDataSetChanged();
+                   parseNewsResults(response);
                 }
             },
                 new Response.ErrorListener() {
@@ -193,7 +191,6 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
 
 
         private String getArticles(String url) {
-
 
             InputStream inputStream = null;
             String result = "";
@@ -235,47 +232,10 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
         }
 
         private class NewsAsyncTask extends AsyncTask<String, Void, String> {
-
-
-
             @Override
             protected void onPostExecute(String s) {
-                JsonParser parser = new JsonParser();
-                JsonElement pe = parser.parse(s);
-                String status = pe.getAsJsonObject().get("status").getAsString();
-                if (!status.equals("OK")){
-
-
-                    return;
-                }
-
-                JsonArray results = pe.getAsJsonObject().get("results").getAsJsonArray();
-                for (JsonElement item : results) {
-                    final JsonObject gobj = item.getAsJsonObject();
-                    final String html  = gobj.get("url").getAsString();
-                    final String  by   = gobj.get("byline").getAsString();
-                    final String title = gobj.get("title").getAsString();
-                    NewsInfo i = new NewsInfo(title,by,html);
-                    final JsonElement media  = gobj.get("media");
-                    if (media.isJsonArray()) {
-                        JsonArray media_array = media.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("media-metadata");
-                        for (JsonElement e : media_array)
-                            i.addImage(e.getAsJsonObject().get("url").getAsString());
-
-                    } else {
-                        String t = "http://graphics8.nytimes.com/images/2014/12/07/books/review/07notables-1/07notables-1-thumbStandard.jpg";
-                        i.addImage(t);
-                    }
-
-
-                    mList.add(i);
-
-                }
-
-
-                 notifyDataSetChanged();
+                parseNewsResults(s);
             }
-
 
             @Override
             protected String doInBackground(String... params) {

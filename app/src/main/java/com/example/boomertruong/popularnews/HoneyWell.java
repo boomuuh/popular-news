@@ -16,7 +16,7 @@ public class HoneyWell extends Application {
 
 
 
-    public static HoneyWell getInstance() {
+    public synchronized static HoneyWell getInstance() {
         return mHoneyWell;
     }
 
