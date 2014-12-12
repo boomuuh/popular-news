@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class NewsArticleWebView extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String NEWS_ARTICLE_URL = "param1";
-
+    private static final String TAG = "NewsArticleWebView Fragment";
 
 
     private String mParam1;
@@ -76,7 +77,7 @@ public class NewsArticleWebView extends Fragment{
         WebView wv = ButterKnife.findById(v,R.id.news_article_web_view);
 
         String url = getArguments().getString(NEWS_ARTICLE_URL, "https://www.google.com/");
-        String html = "<html xmlns=\"" + url + "\"</html>";
+
        wv.setWebViewClient(new NewsWebViewClient());
 
         WebSettings settings = wv.getSettings();
@@ -84,11 +85,11 @@ public class NewsArticleWebView extends Fragment{
       /*  settings.setBuiltInZoomControls(true);
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
-        settings.setDatabaseEnabled(true);
-        settings.setDomStorageEnabled(true);*/
+        settings.setDatabaseEnabled(true);*/
+        settings.setDomStorageEnabled(true);
+        Log.d(TAG,"loading url: " + url);
+        wv.loadUrl(url);
 
-        wv.loadUrl(html);
-        wv.loadData("", "text/html; charset=utf-8", "UTF-8");
 
 
         return v;
@@ -100,7 +101,7 @@ public class NewsArticleWebView extends Fragment{
         public boolean shouldOverrideUrlLoading(WebView view, String url)
         {
 
-
+            view.loadUrl(url);
             return true;
 
         }

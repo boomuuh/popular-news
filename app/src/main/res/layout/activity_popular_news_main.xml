@@ -5,12 +5,18 @@
     tools:context=".PopularNewsMain">
 
 
-    <ListView
+<!--    <ListView
         android:id="@+id/popular_news_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
+      />-->
 
-        />
+    <fragment
+        android:id="@+id/popular_news_list"
+        android:name="com.example.boomertruong.popularnews.fragments.NewsListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_news_list" />
 
 </RelativeLayout>

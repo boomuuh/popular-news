@@ -22,70 +22,43 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.boomertruong.popularnews.fragments.NewsArticleWebView;
+import com.example.boomertruong.popularnews.fragments.NewsListFragment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class PopularNewsMain extends ActionBarActivity implements NewsArticleWebView.OnFragmentInteractionListener {
+public class PopularNewsMain extends ActionBarActivity implements NewsListFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MAIN";
     private static final String NEWS_WEB_VIEW_FRAGMENT = "news_article_web_view_frag";
-    @InjectView(R.id.popular_news_list)
+   /* @InjectView(R.id.popular_news_list)
     ListView mNewsList;
 
     private NetworkChangeReceiver mNetworkListener;
     private onNewsArticleClickListener mItemClicker;
     private NewsFeedListener mScrollListener;
-    private  NewsAdapter adapter;
+    private  NewsAdapter adapter;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popular_news_main);
         ButterKnife.inject(this);
-
+/*
          adapter = new NewsAdapter(this);
          mItemClicker = new onNewsArticleClickListener();
-        mScrollListener = new NewsFeedListener();
+         mScrollListener = new NewsFeedListener();
          mNewsList.setAdapter(adapter);
-        mNewsList.setOnItemClickListener(mItemClicker);
-        mNewsList.setOnScrollListener(mScrollListener);
-    }
-
-    @Override
-    protected void onResume() {
-        if (mNetworkListener == null)
-            mNetworkListener = new NetworkChangeReceiver();
-
-        registerReceiver(mNetworkListener,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        unregisterReceiver(mNetworkListener);
-        super.onPause();
-    }
-
-    public class NetworkChangeReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            ConnectivityManager cm =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE );
-            NetworkInfo activeNetInfo = cm.getActiveNetworkInfo();
-            if (activeNetInfo != null && activeNetInfo.isConnected()) {
-                mScrollListener.reset();
-                adapter.loadMore(0);
-            }
-
-
-        }
+         mNewsList.setOnItemClickListener(mItemClicker);
+         mNewsList.setOnScrollListener(mScrollListener);*/
     }
 
 
-    private class NewsFeedListener implements AbsListView.OnScrollListener {
+
+
+
+   /* private class NewsFeedListener implements AbsListView.OnScrollListener {
         private static final String TAG = "NewsFeedListener";
         private static final int default_size = 20;
         private int count = 0;
@@ -121,37 +94,31 @@ public class PopularNewsMain extends ActionBarActivity implements NewsArticleWeb
         }
     }
 
-
+*/
 
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
 
-    private class onNewsArticleClickListener implements AdapterView.OnItemClickListener {
+   /* private class onNewsArticleClickListener implements AdapterView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                String url = adapter.getWebPage(position);
+               Log.d(TAG,"url: " + url);
 
 
+         *//*      Uri uri = Uri.parse(url);
+               startActivity(new Intent(Intent.ACTION_VIEW,uri));*//*
+            FragmentManager fm = getFragmentManager();
+            NewsArticleWebView f =  NewsArticleWebView.newInstance(url);
 
-               Uri uri = Uri.parse(url);
-               startActivity(new Intent(Intent.ACTION_VIEW,uri));
-           /* FragmentManager fm = getFragmentManager();
-            NewsArticleWebView f = (NewsArticleWebView) fm.findFragmentByTag(NEWS_WEB_VIEW_FRAGMENT);
-            if (f == null) {
-               f =  NewsArticleWebView.newInstance(url);
-
-            }else {
-                fm.beginTransaction().remove(f).commit();
-            }
-
-            fm.beginTransaction().add(f,NEWS_WEB_VIEW_FRAGMENT).commit();*/
+            fm.beginTransaction().add(f,NEWS_WEB_VIEW_FRAGMENT).commit();
         }
 
 
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
