@@ -34,91 +34,24 @@ public class PopularNewsMain extends ActionBarActivity implements NewsListFragme
     private static final String NEWS_WEB_VIEW_FRAGMENT = "news_article_web_view_frag";
    /* @InjectView(R.id.popular_news_list)
     ListView mNewsList;
+    */
 
-    private NetworkChangeReceiver mNetworkListener;
-    private onNewsArticleClickListener mItemClicker;
-    private NewsFeedListener mScrollListener;
-    private  NewsAdapter adapter;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popular_news_main);
         ButterKnife.inject(this);
-/*
-         adapter = new NewsAdapter(this);
-         mItemClicker = new onNewsArticleClickListener();
-         mScrollListener = new NewsFeedListener();
-         mNewsList.setAdapter(adapter);
-         mNewsList.setOnItemClickListener(mItemClicker);
-         mNewsList.setOnScrollListener(mScrollListener);*/
+
     }
 
 
-
-
-
-   /* private class NewsFeedListener implements AbsListView.OnScrollListener {
-        private static final String TAG = "NewsFeedListener";
-        private static final int default_size = 20;
-        private int count = 0;
-        private int prev  = 0;
-        private boolean loading = true;
-
-        public NewsFeedListener() {}
-
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (loading && totalItemCount > prev) {
-                    Log.d(TAG,"1 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
-                    loading = false;
-                    prev = totalItemCount;
-                    count++;
-                }
-
-            if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + default_size)) {
-                Log.d(TAG,"2 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
-                adapter.loadMore(count * default_size);
-                loading = true;
-            }
-        }
-
-        public void reset() {
-            count  = prev = 0;
-            loading = true;
-        }
-    }
-
-*/
 
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
 
-   /* private class onNewsArticleClickListener implements AdapterView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               String url = adapter.getWebPage(position);
-               Log.d(TAG,"url: " + url);
-
-
-         *//*      Uri uri = Uri.parse(url);
-               startActivity(new Intent(Intent.ACTION_VIEW,uri));*//*
-            FragmentManager fm = getFragmentManager();
-            NewsArticleWebView f =  NewsArticleWebView.newInstance(url);
-
-            fm.beginTransaction().add(f,NEWS_WEB_VIEW_FRAGMENT).commit();
-        }
-
-
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
