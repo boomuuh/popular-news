@@ -18,5 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_news_list" />
+    <FrameLayout
+        android:id="@+id/web_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </RelativeLayout>

@@ -116,12 +116,12 @@ public class NewsArticleWebView extends Fragment{
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
+       /* try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
-        }
+        }*/
     }
 
     @Override

@@ -22,6 +22,7 @@ public class NewsListFragment extends ListFragment implements AdapterView.OnItem
 
     private OnFragmentInteractionListener mListener;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,14 +56,14 @@ public class NewsListFragment extends ListFragment implements AdapterView.OnItem
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             if (loading && totalItemCount > prev) {
-                Log.d(TAG, "1 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
+                //Log.d(TAG, "1 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
                 loading = false;
                 prev = totalItemCount;
                 count++;
             }
 
             if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + default_size)) {
-                Log.d(TAG,"2 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
+               // Log.d(TAG,"2 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
                 ((NewsAdapter) getListAdapter()).loadMore(count * default_size);
                 loading = true;
             }
@@ -75,7 +76,7 @@ public class NewsListFragment extends ListFragment implements AdapterView.OnItem
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(String uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -104,7 +105,8 @@ public class NewsListFragment extends ListFragment implements AdapterView.OnItem
         if (adapter != null && adapter instanceof NewsAdapter) {
             NewsAdapter mNewsAdapter = (NewsAdapter) adapter;
             String url = mNewsAdapter.getWebPage(position);
-            startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(url)));
+            mListener.onFragmentInteraction(url);
+           /* startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(url)));*/
         } else {
             Toast.makeText(getActivity(),"Uh OH! empty adapter",Toast.LENGTH_LONG).show();
         }
@@ -122,7 +124,7 @@ public class NewsListFragment extends ListFragment implements AdapterView.OnItem
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onFragmentInteraction(String uri);
     }
 
 }

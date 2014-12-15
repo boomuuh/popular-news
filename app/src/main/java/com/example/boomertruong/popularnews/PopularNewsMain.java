@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.example.boomertruong.popularnews.fragments.NewsArticleWebView;
@@ -36,6 +38,8 @@ public class PopularNewsMain extends ActionBarActivity implements NewsListFragme
     ListView mNewsList;
     */
 
+    @InjectView(R.id.web_view_container)
+    FrameLayout mWebContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +52,16 @@ public class PopularNewsMain extends ActionBarActivity implements NewsListFragme
 
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void onFragmentInteraction(String uri) {
+        Log.d(TAG,"Adding WebView Fragment");
+        NewsArticleWebView wv = NewsArticleWebView.newInstance(uri);
+        wv.getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                return false;
+            }
+        });
+        getFragmentManager().beginTransaction().add(R.id.web_view_container,wv,"NEWS_WEB_VIEW").commit();
     }
 
 
