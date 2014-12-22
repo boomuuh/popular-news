@@ -1,6 +1,7 @@
 package com.example.boomertruong.popularnews;
 
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -49,19 +50,26 @@ public class PopularNewsMain extends ActionBarActivity implements NewsListFragme
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG,"onBackPressed() backstack count: " + getFragmentManager().getBackStackEntryCount());
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        }else{
+            super.onBackPressed();
+        }
 
+    }
 
     @Override
     public void onFragmentInteraction(String uri) {
         Log.d(TAG,"Adding WebView Fragment");
         NewsArticleWebView wv = NewsArticleWebView.newInstance(uri);
-        wv.getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                return false;
-            }
-        });
-        getFragmentManager().beginTransaction().add(R.id.web_view_container,wv,"NEWS_WEB_VIEW").commit();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(R.id.web_view_container, wv, "NEWS_WEB_VIEW");
+        ft.addToBackStack(null);
+        ft.commit();
+
     }
 
 

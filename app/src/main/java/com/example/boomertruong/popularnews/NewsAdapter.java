@@ -84,7 +84,7 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(TAG,"getView position: " + position);
+        //Log.d(TAG,"getView position: " + position);
         NewsHolder nh;
         if (convertView != null) {
             nh = (NewsHolder) convertView.getTag();
@@ -103,7 +103,7 @@ public class NewsAdapter extends ArrayAdapter<NewsInfo> {
                 .fit()
                 .into(nh.img);
         nh.t1.setText(ni.TITLE);
-        nh.t2.setText(ni.BYLINE);
+        nh.t2.setText(Integer.toString(position));
 
 
         return convertView;

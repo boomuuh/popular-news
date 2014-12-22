@@ -3,6 +3,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.boomertruong.popularnews.fragments.NewsListFragment">
 
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"/>
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"

@@ -37,7 +37,11 @@ public class NewsListFragment extends ListFragment implements AdapterView.OnItem
         this.setListAdapter(new NewsAdapter(getActivity()));
         getListView().setOnItemClickListener(this);
         getListView().setOnScrollListener(new NewsFeedListener());
+        getListView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        //setTextView(getListAdapter().getCount());
     }
+
+
 
     private class NewsFeedListener implements AbsListView.OnScrollListener {
         private static final String TAG = "NewsFeedListener";
@@ -56,14 +60,14 @@ public class NewsListFragment extends ListFragment implements AdapterView.OnItem
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             if (loading && totalItemCount > prev) {
-                //Log.d(TAG, "1 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
+                Log.d(TAG, "1 firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
                 loading = false;
                 prev = totalItemCount;
                 count++;
             }
 
             if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + default_size)) {
-               // Log.d(TAG,"2 loading: " + loading + " firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
+                Log.d(TAG,"2 firstVisibleItem: " + firstVisibleItem + " visibleItemCount: " + visibleItemCount + " totalItemCount: " + totalItemCount);
                 ((NewsAdapter) getListAdapter()).loadMore(count * default_size);
                 loading = true;
             }
